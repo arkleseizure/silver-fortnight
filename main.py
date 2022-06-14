@@ -1,4 +1,4 @@
-#No betting yet. Basic Doubling Down in. Can only split pairs once.
+#No betting yet. Basic Doubling Down in. Split pairs on hold to reimpliment to handle infinite splitting (or really more than one is all that I'm worried about)
 
 def hand_summary (hand):
     hand_text = ""
@@ -9,12 +9,12 @@ def hand_summary (hand):
         if card_in_hand['value'] == 11:
             aces = aces + 1
         hand_value = hand_value + card_in_hand['value']
-    hand_text = hand_text[:-2]
+    hand_text = hand_text[:-2] #Truncates final ", " from list of cards in hand.
     while aces > 0:
-        if hand_value > 21:
+        if hand_value > 21: #evaluates if the hand is over 21 and has aces that could be dropped from 11 to 1 in value
             hand_value = hand_value - 10
         aces = aces - 1
-    return {"text":hand_text,"value":hand_value}        
+    return {"text":hand_text,"value":hand_value}
 
 def build_deck():
     deck = []
@@ -22,11 +22,11 @@ def build_deck():
         card_suit = suits[index // 13]
         card_rank = ranks[index % 13 + 1]
         if (index % 13 + 1) == 1:
-            card_value = 11
+            card_value = 11 #Aces
         elif (index % 13 + 1) > 10:
-            card_value = 10
+            card_value = 10 #Faces
         else:
-            card_value = (index % 13 + 1)
+            card_value = (index % 13 + 1) #2-10
         card = {"rank":card_rank,"suit":card_suit,"value":card_value}
         deck.append(card)    
     return(deck)
@@ -73,9 +73,9 @@ dealer_hand.append(deck.pop())
 #player_hand = [{"rank":"Ten","suit":" of Diamonds","value":10},
 #               {"rank":"Ten","suit":" of Clubs","value":10}]
 player_hand_summary=hand_summary(player_hand)
-second_hand_summary={"text":"","value":22} # for end of game checking logic. Will be overridden in split pairs
 dealer_hand_summary=hand_summary(dealer_hand)
-#If Dealer has a blackjack, they will win regardless
+
+#If Dealer has a blackjack, they will against anything other than player blackjack
 if dealer_hand_summary["value"] == 21:
     dealer_blackjack = True
 
@@ -83,14 +83,7 @@ if dealer_hand_summary["value"] == 21:
 if player_hand_summary["value"] == 21:
     player_blackjack = True
     done = True
-    print(f"Your Hand: \n{player_hand_summary['text']}\nYour hand's value is:{player_hand_summary['value']}.")
-    print("Blackjack!")
-
-# Player blackjack wins other than against Dealer blackjack
-if player_hand_summary["value"] == 21:
-    player_blackjack = True
-    done = True
-    print(f"Your Hand: \n{player_hand_summary['text']}\nYour hand's value is:{player_hand_summary['value']}.")
+    print(f"Your Hand: \n{player_hand_summary['text']}\nYour hand's value is: {player_hand_summary['value']}.")
     print("Blackjack!")
 
 #if player_hand[0]["rank"]==player_hand[1]["rank"]:
